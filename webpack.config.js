@@ -1,6 +1,8 @@
 const path = require("path")
 const HtmlWebpackPlugin = require("html-webpack-plugin")
 const CopyPlugin = require("copy-webpack-plugin")
+const tailwindcss = require("tailwindcss")
+const autoprefixer = require("autoprefixer")
 
 module.exports = {
   mode: "development",
@@ -19,9 +21,25 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.(ts|tsx)$/, // Match ts and tsx files
+        test: /\.(ts|tsx)$/,
         exclude: /node_modules/,
-        use: "ts-loader", // Use ts-loader for TypeScript files
+        use: "ts-loader",
+      },
+      {
+        test: /\.css$/,
+        use: [
+          "style-loader",
+          "css-loader",
+          {
+            loader: "postcss-loader",
+            options: {
+              postcssOptions: {
+                indent: "postcss",
+                plugins: ["tailwindcss", "autoprefixer"],
+              },
+            },
+          },
+        ],
       },
     ],
   },
@@ -29,11 +47,7 @@ module.exports = {
     new CopyPlugin({
       patterns: [
         {
-          from: path.resolve("src/assets/manifest.json"),
-          to: path.resolve("dist"),
-        },
-        {
-          from: path.resolve("src/assets/icon.png"),
+          from: path.resolve("src/static"),
           to: path.resolve("dist"),
         },
       ],

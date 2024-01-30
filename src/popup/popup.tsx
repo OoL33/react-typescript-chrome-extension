@@ -1,9 +1,10 @@
 import React from "react"
 import { createRoot } from "react-dom/client"
+import "../assets/tailwind.css"
 
 const test = (
   <div>
-    <h1>Hello World</h1>
+    <h1 className="text-xl">Hello World</h1>
   </div>
 )
 
