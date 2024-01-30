@@ -4,12 +4,13 @@ const CopyPlugin = require("copy-webpack-plugin")
 
 module.exports = {
   mode: "development",
+  devtool: "cheap-module-source-map",
   entry: {
-    popup: "./src/popup/popup.tsx",
+    popup: path.resolve("./src/popup/popup.tsx"),
   },
   output: {
     path: path.resolve(__dirname, "dist"),
-    filename: "bundle.js",
+    filename: "[name].js",
     publicPath: "/", // Public URL of the output directory when referenced in a browser
   },
   resolve: {
@@ -40,6 +41,7 @@ module.exports = {
     new HtmlWebpackPlugin({
       title: "ReactTS Boilerplate",
       filename: "popup.html",
+      chunks: ["popup"],
     }),
   ],
   devServer: {

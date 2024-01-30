@@ -9,7 +9,7 @@
     "128": "icon.png"
   },
   "action": {
-    "default_popup": "dist/popup.html",
+    "default_popup": "popup.html",
     "default_title": "React Boilerplate",
     "default_icon": "icon.png"
   }
