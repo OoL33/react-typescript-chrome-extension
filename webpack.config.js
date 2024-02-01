@@ -1,14 +1,13 @@
 const path = require("path")
-const HtmlWebpackPlugin = require("html-webpack-plugin")
+const HtmlPlugin = require("html-webpack-plugin")
 const CopyPlugin = require("copy-webpack-plugin")
-const tailwindcss = require("tailwindcss")
-const autoprefixer = require("autoprefixer")
 
 module.exports = {
   mode: "development",
   devtool: "cheap-module-source-map",
   entry: {
     popup: path.resolve("./src/popup/popup.tsx"),
+    options: path.resolve("./src/options/options.tsx"),
   },
   output: {
     path: path.resolve(__dirname, "dist"),
@@ -34,8 +33,7 @@ module.exports = {
             loader: "postcss-loader",
             options: {
               postcssOptions: {
-                indent: "postcss",
-                plugins: ["tailwindcss", "autoprefixer"],
+                plugins: [require("tailwindcss"), require("autoprefixer")],
               },
             },
           },
@@ -52,11 +50,7 @@ module.exports = {
         },
       ],
     }),
-    new HtmlWebpackPlugin({
-      title: "ReactTS Boilerplate",
-      filename: "popup.html",
-      chunks: ["popup"],
-    }),
+    ...getHtmlPlugins(["popup", "options"]),
   ],
   devServer: {
     contentBase: path.join(__dirname, "dist"), // Serve content from the dist directory
@@ -64,4 +58,14 @@ module.exports = {
     port: 3000, // Port to run dev server
     historyApiFallback: true, // Fallback to index.html for SPA routing
   },
+}
+function getHtmlPlugins(chunks) {
+  return chunks.map(
+    (chunk) =>
+      new HtmlPlugin({
+        title: "React Typescript Extension",
+        filename: `${chunk}.html`,
+        chunks: [chunk],
+      })
+  )
 }
