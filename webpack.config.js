@@ -1,5 +1,5 @@
 const path = require("path")
-const HtmlWebpackPlugin = require("html-webpack-plugin")
+const HtmlPlugin = require("html-webpack-plugin")
 const CopyPlugin = require("copy-webpack-plugin")
 
 module.exports = {
@@ -7,6 +7,7 @@ module.exports = {
   devtool: "cheap-module-source-map",
   entry: {
     popup: path.resolve("./src/popup/popup.tsx"),
+    options: path.resolve("./src/options/options.tsx"),
   },
   output: {
     path: path.resolve(__dirname, "dist"),
@@ -19,9 +20,24 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.(ts|tsx)$/, // Match ts and tsx files
+        test: /\.(ts|tsx)$/,
         exclude: /node_modules/,
-        use: "ts-loader", // Use ts-loader for TypeScript files
+        use: "ts-loader",
+      },
+      {
+        test: /\.css$/,
+        use: [
+          "style-loader",
+          "css-loader",
+          {
+            loader: "postcss-loader",
+            options: {
+              postcssOptions: {
+                plugins: [require("tailwindcss"), require("autoprefixer")],
+              },
+            },
+          },
+        ],
       },
     ],
   },
@@ -29,20 +45,12 @@ module.exports = {
     new CopyPlugin({
       patterns: [
         {
-          from: path.resolve("src/assets/manifest.json"),
-          to: path.resolve("dist"),
-        },
-        {
-          from: path.resolve("src/assets/icon.png"),
+          from: path.resolve("src/static"),
           to: path.resolve("dist"),
         },
       ],
     }),
-    new HtmlWebpackPlugin({
-      title: "ReactTS Boilerplate",
-      filename: "popup.html",
-      chunks: ["popup"],
-    }),
+    ...getHtmlPlugins(["popup", "options"]),
   ],
   devServer: {
     contentBase: path.join(__dirname, "dist"), // Serve content from the dist directory
@@ -50,4 +58,14 @@ module.exports = {
     port: 3000, // Port to run dev server
     historyApiFallback: true, // Fallback to index.html for SPA routing
   },
+}
+function getHtmlPlugins(chunks) {
+  return chunks.map(
+    (chunk) =>
+      new HtmlPlugin({
+        title: "React Typescript Extension",
+        filename: `${chunk}.html`,
+        chunks: [chunk],
+      })
+  )
 }
