@@ -3,11 +3,14 @@ const HtmlPlugin = require("html-webpack-plugin")
 const CopyPlugin = require("copy-webpack-plugin")
 
 module.exports = {
-  mode: "development",
   devtool: "cheap-module-source-map",
   entry: {
     popup: path.resolve("./src/popup/popup.tsx"),
     options: path.resolve("./src/options/options.tsx"),
+    background: path.resolve("./src/background/background.ts"),
+    contentScript: path.resolve("./src/contentScript/contentScript.ts"),
+    dashboard: path.resolve("src/dashboard/index.tsx"),
+    newTab: path.resolve("./src/tabs/index.tsx"),
   },
   output: {
     path: path.resolve(__dirname, "dist"),
@@ -39,6 +42,10 @@ module.exports = {
           },
         ],
       },
+      {
+        test: /\.(png|svg|jpg|jpeg|gif)$/i,
+        use: ["file-loader"],
+      },
     ],
   },
   plugins: [
@@ -50,15 +57,16 @@ module.exports = {
         },
       ],
     }),
-    ...getHtmlPlugins(["popup", "options"]),
+    ...getHtmlPlugins(["popup", "options", "dashboard", "newTab"]),
   ],
-  devServer: {
-    contentBase: path.join(__dirname, "dist"), // Serve content from the dist directory
-    compress: true,
-    port: 3000, // Port to run dev server
-    historyApiFallback: true, // Fallback to index.html for SPA routing
+  optimization: {
+    splitChunks: {
+      // include all types of chunks
+      chunks: "all",
+    },
   },
 }
+
 function getHtmlPlugins(chunks) {
   return chunks.map(
     (chunk) =>

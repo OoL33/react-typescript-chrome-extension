@@ -1,14 +1,18 @@
 import React from "react"
 import { createRoot } from "react-dom/client"
 import "../assets/tailwind.css"
+import bobaCat from "../static/bobacat.jpg"
 
-const test = (
-  <div>
-    <h1>Hello World</h1>
-  </div>
-)
+function Popup() {
+  return (
+    <div>
+      <h1>Hello World</h1>
+      <img
+        src={bobaCat}
+        alt="Image of gray carton cat drinking a boba milk tea."
+      />
+    </div>
+  )
+}
 
-const container = document.createElement("div")
-document.body.appendChild(container)
-const root = createRoot(container)
-root.render(test)
+export default Popup
