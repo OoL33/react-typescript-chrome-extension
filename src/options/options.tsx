@@ -4,7 +4,7 @@ import "../assets/tailwind.css"
 
 const test = (
   <div>
-    <h1>Hello World</h1>
+    <h1>Options</h1>
   </div>
 )
 
